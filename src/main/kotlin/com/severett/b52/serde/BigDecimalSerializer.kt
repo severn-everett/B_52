@@ -7,13 +7,16 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class BigDecimalSerializer : KSerializer<BigDecimal> {
-    override val descriptor = PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.DOUBLE)
+    private val decimalFormat = DecimalFormat("0.00").apply { roundingMode = RoundingMode.HALF_UP }
+
+    override val descriptor = PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: BigDecimal) {
-        encoder.encodeDouble(value.setScale(2, RoundingMode.HALF_UP).toDouble())
+        encoder.encodeString(decimalFormat.format(value.toDouble()).toString())
     }
 
-    override fun deserialize(decoder: Decoder): BigDecimal = BigDecimal.valueOf(decoder.decodeDouble())
+    override fun deserialize(decoder: Decoder): BigDecimal = BigDecimal(decoder.decodeString())
 }

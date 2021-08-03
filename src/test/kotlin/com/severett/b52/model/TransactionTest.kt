@@ -1,6 +1,7 @@
 package com.severett.b52.model
 
 import com.severett.b52.exception.JsonParsingException
+import com.severett.b52.util.toDateTimeString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -13,7 +14,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.stream.Stream
 
@@ -24,7 +24,7 @@ class TransactionTest {
     fun goodSerialization() {
         val timestamp = Instant.now()
         val amount = 12345.678
-        val timestampStr = DateTimeFormatter.ISO_INSTANT.format(timestamp)
+        val timestampStr = timestamp.toDateTimeString()
         val transaction = Json.decodeFromString<Transaction>(
             "{\"amount\":\"$amount\",\"timestamp\":\"$timestampStr\"}"
         )
@@ -41,7 +41,7 @@ class TransactionTest {
     @ValueSource(strings = ["", "null", "\"NON_NUMBER\""])
     fun invalidAmount(amountStr: String) {
         val timestamp = Instant.now()
-        val timestampStr = DateTimeFormatter.ISO_INSTANT.format(timestamp)
+        val timestampStr = timestamp.toDateTimeString()
         assertThrows<JsonParsingException> {
             val rawStr = if (amountStr.isEmpty()) {
                 "{\"timestamp\":\"$timestampStr\"}"
@@ -67,13 +67,15 @@ class TransactionTest {
     }
 
     private fun invalidTimestamp(): Stream<Arguments> {
-        val tomorrowTimestamp = Instant.now().plus(1, ChronoUnit.DAYS)
+        val tomorrowTimestamp = Instant.now()
+            .plus(1, ChronoUnit.DAYS)
+            .toDateTimeString()
         return Stream.of(
             Arguments.of(""),
             Arguments.of("null"),
             Arguments.of("5"),
             Arguments.of("\"01/01/2021\""),
-            Arguments.of("\"${DateTimeFormatter.ISO_INSTANT.format(tomorrowTimestamp)}\"")
+            Arguments.of("\"$tomorrowTimestamp\"")
         )
     }
 }

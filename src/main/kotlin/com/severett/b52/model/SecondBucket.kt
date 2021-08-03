@@ -1,5 +1,6 @@
 package com.severett.b52.model
 
+import mu.KLogging
 import java.math.BigDecimal
 import java.util.concurrent.Semaphore
 
@@ -13,6 +14,7 @@ class SecondBucket {
     fun addTransaction(transaction: Transaction) {
         try {
             mutex.acquire()
+            logger.debug { "Received Transaction: $transaction" }
             val transactionAmt = transaction.amount
             if (count == 0L) {
                 max = transactionAmt
@@ -45,4 +47,6 @@ class SecondBucket {
             mutex.release()
         }
     }
+
+    private companion object : KLogging()
 }
