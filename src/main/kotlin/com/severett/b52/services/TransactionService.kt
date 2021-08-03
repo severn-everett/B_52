@@ -43,8 +43,14 @@ class TransactionService {
                 count += secondBucket.count
             }
         }
-        val avg = if (count > 0L) sum.divide(BigDecimal.valueOf(count)) else null
-        return TransactionStatistics(sum = sum, avg = avg, max = max, min = min, count = count)
+        val avg = if (count > 0L) sum.divide(BigDecimal.valueOf(count)) else BigDecimal.ZERO
+        return TransactionStatistics(
+            sum = sum,
+            avg = avg,
+            max = max ?: BigDecimal.ZERO,
+            min = min ?: BigDecimal.ZERO,
+            count = count
+        )
     }
 
     fun deleteTransactions() {
@@ -52,6 +58,6 @@ class TransactionService {
     }
 
     private companion object {
-        const val SECONDS_WINDOW = 59L
+        private const val SECONDS_WINDOW = 59L
     }
 }

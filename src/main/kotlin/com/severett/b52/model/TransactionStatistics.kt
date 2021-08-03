@@ -9,10 +9,10 @@ data class TransactionStatistics(
     @Serializable(with = BigDecimalSerializer::class)
     val sum: BigDecimal,
     @Serializable(with = BigDecimalSerializer::class)
-    val avg: BigDecimal?,
+    val avg: BigDecimal,
     @Serializable(with = BigDecimalSerializer::class)
-    val max: BigDecimal?,
+    val max: BigDecimal,
     @Serializable(with = BigDecimalSerializer::class)
-    val min: BigDecimal?,
+    val min: BigDecimal,
     val count: Long
 )

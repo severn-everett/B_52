@@ -31,9 +31,13 @@ tasks {
 }
 
 dependencies {
+    val junitVersion: String by project
     // Production dependencies
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(kotlin("stdlib-jdk8"))
+    // Testing dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
 }
