@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.5.21"
-    kotlin("plugin.serialization") version "1.5.21"
-    id("org.springframework.boot") version "2.5.3"
+    kotlin("jvm") version "1.6.0"
+    kotlin("plugin.serialization") version "1.6.0"
+    id("org.springframework.boot") version "2.6.0"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
@@ -21,8 +21,8 @@ tasks {
     withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
         kotlinOptions {
             jvmTarget = "16"
-            apiVersion = "1.5"
-            languageVersion = "1.5"
+            apiVersion = "1.6"
+            languageVersion = "1.6"
         }
     }
     test {
@@ -33,8 +33,8 @@ tasks {
 dependencies {
     val junitVersion: String by project
     // Production dependencies
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(kotlin("stdlib-jdk8"))
     // Testing dependencies

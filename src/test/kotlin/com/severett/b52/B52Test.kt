@@ -39,7 +39,7 @@ class B52Test(
     @Test
     fun testAddTransactions() {
         val baseTimestamp = Instant.now()
-        val transactionsList = ArrayList<Pair<Double, String>>().apply {
+        val transactionsList = buildList {
             val timestampOne = baseTimestamp.minusSeconds(5).toDateTimeString()
             add(10.0 to timestampOne)
             add(15.0 to timestampOne)
@@ -117,7 +117,7 @@ class B52Test(
     @ParameterizedTest
     @MethodSource("genInvalidTransactionData")
     fun testInvalidTransactionData(amountStr: String, timestampStr: String) {
-        val paramsList = ArrayList<String>().apply {
+        val paramsList = buildList {
             if (amountStr.isNotEmpty()) {
                 add("\"amount\":$amountStr")
             }

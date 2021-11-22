@@ -20,10 +20,10 @@ class SecondBucket {
                 max = transactionAmt
                 min = transactionAmt
             } else {
-                if (max.compareTo(transactionAmt) == -1) {
+                if (max compareTo transactionAmt == -1) {
                     max = transactionAmt
                 }
-                if (min.compareTo(transactionAmt) == 1) {
+                if (min compareTo transactionAmt == 1) {
                     min = transactionAmt
                 }
             }

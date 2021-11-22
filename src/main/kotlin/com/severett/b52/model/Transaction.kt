@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 import java.time.Instant
 
+@JvmRecord
 @Serializable(with = TransactionSerializer::class)
 data class Transaction(val amount: BigDecimal, val timestamp: Instant) {
     init {

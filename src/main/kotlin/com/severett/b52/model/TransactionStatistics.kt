@@ -4,6 +4,7 @@ import com.severett.b52.serde.BigDecimalSerializer
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
+@JvmRecord
 @Serializable
 data class TransactionStatistics(
     @Serializable(with = BigDecimalSerializer::class)
