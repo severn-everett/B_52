@@ -1,8 +1,8 @@
 package com.severett.b52.model
 
+import com.severett.b52.exception.InvalidJsonException
 import com.severett.b52.exception.JsonParsingException
 import com.severett.b52.util.toDateTimeString
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -34,7 +34,7 @@ class TransactionTest {
 
     @Test
     fun invalidJSON() {
-        assertThrows<SerializationException> { Json.decodeFromString<Transaction>("INVALID JSON") }
+        assertThrows<InvalidJsonException> { Json.decodeFromString<Transaction>("INVALID JSON") }
     }
 
     @ParameterizedTest

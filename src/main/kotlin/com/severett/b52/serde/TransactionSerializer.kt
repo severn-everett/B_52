@@ -1,8 +1,10 @@
 package com.severett.b52.serde
 
+import com.severett.b52.exception.InvalidJsonException
 import com.severett.b52.exception.JsonParsingException
 import com.severett.b52.model.Transaction
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.*
@@ -26,35 +28,42 @@ class TransactionSerializer : KSerializer<Transaction> {
     }
 
     override fun deserialize(decoder: Decoder): Transaction {
-        return decoder.decodeStructure(descriptor) {
-            var rawAmount: BigDecimal? = null
-            var rawTimestamp: Instant? = null
-            while (true) {
-                when (val index = decodeElementIndex(descriptor)) {
-                    AMOUNT_INDEX -> {
-                        try {
-                            rawAmount = decodeSerializableElement(descriptor, index, bigDecimalSerializer)
-                        } catch (e: Exception) {
-                            throw JsonParsingException(e.message ?: "Unknown cause")
+        return try {
+            decoder.decodeStructure(descriptor) {
+                var rawAmount: BigDecimal? = null
+                var rawTimestamp: Instant? = null
+                while (true) {
+                    when (val index = decodeElementIndex(descriptor)) {
+                        AMOUNT_INDEX -> {
+                            try {
+                                rawAmount = decodeSerializableElement(descriptor, index, bigDecimalSerializer)
+                            } catch (e: Exception) {
+                                throw JsonParsingException(e.message ?: "Unknown cause")
+                            }
                         }
+                        TIMESTAMP_INDEX -> {
+                            try {
+                                rawTimestamp = decodeSerializableElement(descriptor, index, instantSerializer)
+                            } catch (e: Exception) {
+                                throw JsonParsingException(e.message ?: "Unknown cause")
+                            }
+                            if (Instant.now().isBefore(rawTimestamp)) {
+                                throw JsonParsingException("Field 'timestamp' must not be in the future")
+                            }
+                        }
+                        CompositeDecoder.DECODE_DONE -> break
+                        else -> error("Unexpected index: $index")
                     }
-                    TIMESTAMP_INDEX -> {
-                        try {
-                            rawTimestamp = decodeSerializableElement(descriptor, index, instantSerializer)
-                        } catch (e: Exception) {
-                            throw JsonParsingException(e.message ?: "Unknown cause")
-                        }
-                        if (Instant.now().isBefore(rawTimestamp)) {
-                            throw JsonParsingException("Field 'timestamp' must not be in the future")
-                        }
-                    }
-                    CompositeDecoder.DECODE_DONE -> break
-                    else -> error("Unexpected index: $index")
                 }
+                val amount = rawAmount ?: throw JsonParsingException("Field 'amount' missing")
+                val timestamp = rawTimestamp ?: throw JsonParsingException("Field 'timestamp' missing")
+                Transaction(amount, timestamp)
             }
-            val amount = rawAmount ?: throw JsonParsingException("Field 'amount' missing")
-            val timestamp = rawTimestamp ?: throw JsonParsingException("Field 'timestamp' missing")
-            Transaction(amount, timestamp)
+        } catch (e: Exception) {
+            when (e) {
+                is SerializationException -> throw InvalidJsonException()
+                else -> throw e
+            }
         }
     }
 

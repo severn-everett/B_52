@@ -32,10 +32,14 @@ tasks {
 
 dependencies {
     val junitVersion: String by project
+    val kotlinCoroutinesVersion: String by project
     // Production dependencies
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinCoroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation(kotlin("reflect"))
     implementation(kotlin("stdlib-jdk8"))
     // Testing dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")

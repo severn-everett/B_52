@@ -1,19 +1,19 @@
 package com.severett.b52.model
 
+import kotlinx.coroutines.sync.Mutex
 import mu.KLogging
 import java.math.BigDecimal
-import java.util.concurrent.Semaphore
 
 class SecondBucket {
-    private val mutex = Semaphore(1)
+    private val mutex = Mutex()
     private var sum = BigDecimal.ZERO
     private lateinit var max: BigDecimal
     private lateinit var min: BigDecimal
     private var count = 0L
 
-    fun addTransaction(transaction: Transaction) {
+    suspend fun addTransaction(transaction: Transaction) {
         try {
-            mutex.acquire()
+            mutex.lock()
             logger.debug { "Received Transaction: $transaction" }
             val transactionAmt = transaction.amount
             if (count == 0L) {
@@ -30,13 +30,13 @@ class SecondBucket {
             sum = sum.add(transactionAmt)
             count++
         } finally {
-            mutex.release()
+            mutex.unlock()
         }
     }
 
-    fun getStatistics(): SecondStatistics {
+    suspend fun getStatistics(): SecondStatistics {
         try {
-            mutex.acquire()
+            mutex.lock()
             return SecondStatistics(
                 sum = sum,
                 max = if (this::max.isInitialized) max else null,
@@ -44,7 +44,7 @@ class SecondBucket {
                 count = count
             )
         } finally {
-            mutex.release()
+            mutex.unlock()
         }
     }
 

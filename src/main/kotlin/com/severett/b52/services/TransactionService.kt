@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 class TransactionService {
     private val transactions = ConcurrentHashMap<Long, SecondBucket>()
 
-    fun addTransaction(transaction: Transaction): AddTransactionResult {
+    suspend fun addTransaction(transaction: Transaction): AddTransactionResult {
         if (transaction.timestamp.isBefore(Instant.now().minusSeconds(SECONDS_WINDOW))) {
             return AddTransactionResult.TRANSACTION_EXPIRED
         }
@@ -21,7 +21,7 @@ class TransactionService {
         return AddTransactionResult.SUCCESS
     }
 
-    fun getStatistics(): TransactionStatistics {
+    suspend fun getStatistics(): TransactionStatistics {
         val currentTimestamp = Instant.now()
         var sum = BigDecimal.ZERO
         var max: BigDecimal? = null
