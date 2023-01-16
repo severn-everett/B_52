@@ -1,7 +1,11 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_19
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    kotlin("jvm") version "1.7.21"
-    kotlin("plugin.serialization") version "1.7.21"
-    id("org.springframework.boot") version "3.0.0"
+    kotlin("jvm") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.0"
+    id("org.springframework.boot") version "3.0.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
@@ -18,11 +22,12 @@ apply(plugin = "org.springframework.boot")
 apply(plugin = "io.spring.dependency-management")
 
 tasks {
-    withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
-        kotlinOptions {
-            jvmTarget = "17"
-            apiVersion = "1.7"
-            languageVersion = "1.7"
+    withType(KotlinCompile::class.java).configureEach {
+        compilerOptions {
+            val kotlinVersion = KOTLIN_1_8
+            jvmTarget.set(JVM_19)
+            apiVersion.set(kotlinVersion)
+            languageVersion.set(kotlinVersion)
         }
     }
     test {
@@ -40,7 +45,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     // Testing dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
