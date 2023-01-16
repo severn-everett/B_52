@@ -22,6 +22,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.stream.Stream
 
+private const val EMPTY_RESPONSE = """{"sum":"0.00","avg":"0.00","max":"0.00","min":"0.00","count":0}"""
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebFlux
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -167,9 +169,5 @@ class B52Test(
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectBody().json(EMPTY_RESPONSE)
-    }
-
-    private companion object {
-        private const val EMPTY_RESPONSE = """{"sum":"0.00","avg":"0.00","max":"0.00","min":"0.00","count":0}"""
     }
 }

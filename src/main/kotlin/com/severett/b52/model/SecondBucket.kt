@@ -1,8 +1,11 @@
 package com.severett.b52.model
 
 import kotlinx.coroutines.sync.Mutex
-import mu.KLogging
+import kotlinx.coroutines.sync.withLock
+import mu.KotlinLogging
 import java.math.BigDecimal
+
+private val logger = KotlinLogging.logger {}
 
 class SecondBucket {
     private val mutex = Mutex()
@@ -12,8 +15,7 @@ class SecondBucket {
     private var count = 0L
 
     suspend fun addTransaction(transaction: Transaction) {
-        try {
-            mutex.lock()
+        mutex.withLock {
             logger.debug { "Received Transaction: $transaction" }
             val transactionAmt = transaction.amount
             if (count == 0L) {
@@ -29,24 +31,17 @@ class SecondBucket {
             }
             sum = sum.add(transactionAmt)
             count++
-        } finally {
-            mutex.unlock()
         }
     }
 
     suspend fun getStatistics(): SecondStatistics {
-        try {
-            mutex.lock()
-            return SecondStatistics(
+        return mutex.withLock {
+            SecondStatistics(
                 sum = sum,
                 max = if (this::max.isInitialized) max else null,
                 min = if (this::min.isInitialized) min else null,
                 count = count
             )
-        } finally {
-            mutex.unlock()
         }
     }
-
-    private companion object : KLogging()
 }

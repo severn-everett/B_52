@@ -11,6 +11,9 @@ import kotlinx.serialization.encoding.*
 import java.math.BigDecimal
 import java.time.Instant
 
+private const val AMOUNT_INDEX = 0
+private const val TIMESTAMP_INDEX = 1
+
 class TransactionSerializer : KSerializer<Transaction> {
     private val bigDecimalSerializer = BigDecimalSerializer()
     private val instantSerializer = InstantSerializer()
@@ -65,10 +68,5 @@ class TransactionSerializer : KSerializer<Transaction> {
                 else -> throw e
             }
         }
-    }
-
-    private companion object {
-        private const val AMOUNT_INDEX = 0
-        private const val TIMESTAMP_INDEX = 1
     }
 }

@@ -9,6 +9,8 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 
+private const val SECONDS_WINDOW = 59L
+
 @Service
 class TransactionService {
     private val transactions = ConcurrentHashMap<Long, SecondBucket>()
@@ -55,9 +57,5 @@ class TransactionService {
 
     fun deleteTransactions() {
         transactions.clear()
-    }
-
-    private companion object {
-        private const val SECONDS_WINDOW = 59L
     }
 }
